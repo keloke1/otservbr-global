@@ -524,6 +524,7 @@ void Player::setVarStats(stats_t stat, int32_t modifier)
 			if (getMana() > getMaxMana()) {
 				Creature::changeMana(getMaxMana() - getMana());
 			}
+      g_game.addPlayerMana(this);
 			break;
 		}
 
@@ -1408,6 +1409,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (party) {
 		party->updateSharedExperience();
+    party->updatePlayerStatus(this, oldPos, newPos);
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
@@ -1785,6 +1787,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		setBaseSpeed(getBaseSpeed());
 		g_game.changeSpeed(this, 0);
 		g_game.addCreatureHealth(this);
+    g_game.addPlayerMana(this);
 
 		if (party) {
 			party->updateSharedExperience();
@@ -1862,6 +1865,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 
 		g_game.changeSpeed(this, 0);
 		g_game.addCreatureHealth(this);
+    g_game.addPlayerMana(this);
 
 		if (party) {
 			party->updateSharedExperience();
@@ -2224,6 +2228,7 @@ void Player::death(Creature* lastHitCreature)
 		health = healthMax;
 		g_game.internalTeleport(this, getTemplePosition(), true);
 		g_game.addCreatureHealth(this);
+    g_game.addPlayerMana(this);
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();
@@ -3826,6 +3831,7 @@ void Player::changeMana(int32_t manaChange)
 	}
 
 	sendStats();
+  g_game.addPlayerMana(this);
 }
 
 void Player::changeSoul(int32_t soulChange)
@@ -4302,8 +4308,8 @@ bool Player::isGuildMate(const Player* player) const
 
 void Player::sendPlayerPartyIcons(Player* player)
 {
-	sendCreatureShield(player);
-	sendCreatureSkull(player);
+  sendPartyCreatureShield(player);
+  sendPartyCreatureSkull(player);
 }
 
 bool Player::addPartyInvitation(Party* newParty)
