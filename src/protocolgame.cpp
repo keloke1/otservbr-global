@@ -2640,11 +2640,12 @@ void ProtocolGame::sendPartyCreatureUpdate(const Creature* target)
   uint32_t cid = target->getID();
   checkCreatureAsKnown(cid, known, removedKnown);
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x8B);
   msg.add<uint32_t>(cid);
   msg.addByte(0);//creature update
-  AddCreature(player, known, removedKnown);
+  AddCreature(msg, player, known, removedKnown);
   writeToOutputBuffer(msg);
 }
 
@@ -2656,6 +2657,7 @@ void ProtocolGame::sendPartyCreatureShield(const Creature* target)
     return;
   }
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x91);
   msg.add<uint32_t>(target->getID());
@@ -2675,6 +2677,7 @@ void ProtocolGame::sendPartyCreatureSkull(const Creature* target)
     return;
   }
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x90);
   msg.add<uint32_t>(target->getID());
@@ -2690,6 +2693,7 @@ void ProtocolGame::sendPartyCreatureHealth(const Creature* target, uint8_t healt
     return;
   }
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x8C);
   msg.add<uint32_t>(cid);
@@ -2704,6 +2708,7 @@ void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent
     sendPartyCreatureUpdate(target);
   }
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x8B);
   msg.add<uint32_t>(cid);
@@ -2719,6 +2724,7 @@ void ProtocolGame::sendPartyCreatureShowStatus(const Creature* target, bool show
     sendPartyCreatureUpdate(target);
   }
 
+  NetworkMessage msg;
   msg.reset();
   msg.addByte(0x8B);
   msg.add<uint32_t>(cid);
