@@ -132,6 +132,12 @@ rateMonsterDefense = 1.0
 deSpawnRange = 2
 deSpawnRadius = 50
 
+-- Party List limitations
+-- max distance in which players in party list are visible
+-- NOTE partyListMaxDistance set to 0 means no limit
+partyListMaxDistance = 30
+
+
 -- Stamina
 staminaSystem = true
 
